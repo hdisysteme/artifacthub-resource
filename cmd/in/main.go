@@ -24,11 +24,7 @@ func main() {
 
 	outputDir := os.Args[0]
 
-	baseUrl := baseUrl()
-
-	client := resource.NewHttpClient()
-
-	response, err := resource.Get(request, outputDir, resource.NewArtifactHubClient(client, baseUrl))
+	response, err := resource.Get(request, outputDir, resource.NewArtifactHubClient())
 
 	if err != nil {
 		log.Fatalf("get failed: %s", err)
@@ -37,17 +33,4 @@ func main() {
 	if err := json.NewEncoder(os.Stdout).Encode(response); err != nil {
 		log.Fatalf("failed to marshal response: %s", err)
 	}
-}
-
-func baseUrl() string {
-	var baseUrl string
-
-	env, ok := os.LookupEnv("ARTIFACTHUB_BASE_URL")
-
-	if ok {
-		baseUrl = env
-	} else {
-		baseUrl = "https://artifacthub.io"
-	}
-	return baseUrl
 }

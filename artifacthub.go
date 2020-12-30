@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"sort"
 	"strconv"
 	"time"
@@ -21,14 +22,10 @@ type ArtifactHubClient struct {
 	baseUrl string
 }
 
-func NewHttpClient() *http.Client {
-	return &http.Client{Timeout: 10 * time.Second}
-}
-
-func NewArtifactHubClient(client *http.Client, url string) ArtifactHubClient {
+func NewArtifactHubClient() ArtifactHubClient {
 	return ArtifactHubClient{
-		client:  client,
-		baseUrl: url,
+		client:  &http.Client{Timeout: 10 * time.Second},
+		baseUrl: baseUrl(),
 	}
 }
 
@@ -117,6 +114,15 @@ func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 
 	return versions, nil
 
+}
+
+func baseUrl() string {
+	var baseUrl string
+	baseUrl, ok := os.LookupEnv("ARTIFACTHUB_BASE_URL")
+	if !ok {
+		baseUrl = "https://artifacthub.io"
+	}
+	return baseUrl
 }
 
 func prepareHttpHeader(p Package, request *http.Request) {

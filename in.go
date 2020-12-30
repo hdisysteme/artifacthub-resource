@@ -22,23 +22,23 @@ func Get(request GetRequest, dir string, repository ArtifactHub) (GetResponse, e
 		return emptyResponse, err
 	}
 
-	var metadata Metadata = Metadata{}
-	metadata.append("version", version.Version)
+	var metadata = Metadata{}
 	metadata.append("app_version", version.AppVersion)
 	metadata.append("charts_url", version.Repository.Url)
 	metadata.append("chart_download_url", version.ContentUrl)
 	metadata.append("name", version.Name)
 	metadata.append("organization_name", version.Repository.OrganizationDisplayName)
 	metadata.append("repository_name", version.Repository.DisplayName)
+	metadata.append("version", version.Version)
 
 	path := dir
 
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return emptyResponse, fmt.Errorf("failed to create output directory: %s", err)
 	}
-	for _, metadate := range metadata {
-		if err := ioutil.WriteFile(filepath.Join(path, metadate.Name), []byte(metadate.Value), 0644); err != nil {
-			return emptyResponse, fmt.Errorf("failed to write %s: %s", metadate.Name, err)
+	for _, metadatum := range metadata {
+		if err := ioutil.WriteFile(filepath.Join(path, metadatum.Name), []byte(metadatum.Value), 0644); err != nil {
+			return emptyResponse, fmt.Errorf("failed to write %s: %s", metadatum.Name, err)
 		}
 	}
 
