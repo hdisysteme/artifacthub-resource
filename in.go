@@ -23,6 +23,7 @@ func Get(request GetRequest, dir string, repository ArtifactHub) (GetResponse, e
 	}
 
 	var metadata Metadata = Metadata{}
+	metadata.append("version", version.Version)
 	metadata.append("app_version", version.AppVersion)
 	metadata.append("charts_url", version.Repository.Url)
 	metadata.append("chart_download_url", version.ContentUrl)
@@ -31,24 +32,14 @@ func Get(request GetRequest, dir string, repository ArtifactHub) (GetResponse, e
 	metadata.append("repository_name", version.Repository.DisplayName)
 
 	path := dir
+
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return emptyResponse, fmt.Errorf("failed to create output directory: %s", err)
 	}
-
-	if err := ioutil.WriteFile(filepath.Join(path, "app_version"), []byte(version.AppVersion), 0644); err != nil {
-		return emptyResponse, fmt.Errorf("failed to write version: %s", err)
-	}
-
-	if err := ioutil.WriteFile(filepath.Join(path, "version"), []byte(version.Version), 0644); err != nil {
-		return emptyResponse, fmt.Errorf("failed to write version: %s", err)
-	}
-
-	if err := ioutil.WriteFile(filepath.Join(path, "name"), []byte(version.Name), 0644); err != nil {
-		return emptyResponse, fmt.Errorf("failed to write version: %s", err)
-	}
-
-	if err := ioutil.WriteFile(filepath.Join(path, "chart_download_url"), []byte(version.ContentUrl), 0644); err != nil {
-		return emptyResponse, fmt.Errorf("failed to write version: %s", err)
+	for _, metadate := range metadata {
+		if err := ioutil.WriteFile(filepath.Join(path, metadate.Name), []byte(metadate.Value), 0644); err != nil {
+			return emptyResponse, fmt.Errorf("failed to write %s: %s", metadate.Name, err)
+		}
 	}
 
 	return GetResponse{

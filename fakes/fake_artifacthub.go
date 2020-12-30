@@ -104,7 +104,7 @@ func (fake *FakeArtifactHub) ListHelmVersionReturnsOnCall(i int, result1 resourc
 	}{result1, result2}
 }
 
-func (fake *FakeArtifactHub) ListVersions(arg1 resource.Package) ([]resource.Version, error) {
+func (fake *FakeArtifactHub) ListHelmVersions(arg1 resource.Package) ([]resource.Version, error) {
 	fake.listVersionsMutex.Lock()
 	ret, specificReturn := fake.listVersionsReturnsOnCall[len(fake.listVersionsArgsForCall)]
 	fake.listVersionsArgsForCall = append(fake.listVersionsArgsForCall, struct {
@@ -112,7 +112,7 @@ func (fake *FakeArtifactHub) ListVersions(arg1 resource.Package) ([]resource.Ver
 	}{arg1})
 	stub := fake.ListVersionsStub
 	fakeReturns := fake.listVersionsReturns
-	fake.recordInvocation("ListVersions", []interface{}{arg1})
+	fake.recordInvocation("ListHelmVersions", []interface{}{arg1})
 	fake.listVersionsMutex.Unlock()
 	if stub != nil {
 		return stub(arg1)

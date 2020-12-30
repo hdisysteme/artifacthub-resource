@@ -20,12 +20,12 @@ import (
 var _ = Describe("E2E In Resource", func() {
 
 	var (
-		token         string
-		server        *ghttp.Server
-		execPath      string
-		session       *Session
-		tempDirectory string
-		jsonResponse  = `
+		apiToken                    string
+		server                      *ghttp.Server
+		execPath                    string
+		session                     *Session
+		tmpDir                      string
+		fakeArtifactHubJsonResponse = `
 {
   "package_id": "be378d3f-d6c5-47ac-a2ae-0cb5d9f6d8f5",
   "name": "some-package",
@@ -98,92 +98,76 @@ var _ = Describe("E2E In Resource", func() {
 	BeforeEach(func() {
 		execPath = buildExec("github.com/PG2000/artifacthub-resource/cmd/in")
 		server = ghttp.NewServer()
-		token = "MY_SECRET_TOKEN"
+		apiToken = "MY_SECRET_TOKEN"
 
 		var err error
-		tempDirectory, err = ioutil.TempDir("", "resource-test-")
+		tmpDir, err = ioutil.TempDir("", "resource-test-")
 		Expect(err).ToNot(HaveOccurred())
 	})
 
 	AfterEach(func() {
 		CleanupBuildArtifacts()
 		server.Close()
-		os.RemoveAll(tempDirectory)
+		os.RemoveAll(tmpDir)
 	})
 
-	When("in is executed", func() {
-		It("it should return metadata 	", func() {
+	When("in is executed with api key", func() {
+
+		BeforeEach(func() {
 			server.AppendHandlers(ghttp.CombineHandlers(
 				ghttp.VerifyRequest("GET", "/api/v1/packages/helm/acme-charts/some-package/9.2.4"),
 				ghttp.VerifyHeader(http.Header{
-					"Authorization": []string{"Bearer " + token},
+					"Authorization": []string{"Bearer " + apiToken},
 				}),
-				ghttp.RespondWith(http.StatusOK, jsonResponse),
+				ghttp.RespondWith(http.StatusOK, fakeArtifactHubJsonResponse),
 			))
 
 			session = executeCheckCommand(
 				execPath,
-				fmt.Sprintf("{ \"source\": {\"repository_name\": \"acme-charts\", \"package_name\": \"some-package\", \"api_key\": \"%s\"}, \"version\": {\"created_at\":\"2020-11-25T16:03:42+01:00\",\"version\":\"9.2.4\"} }", token),
-				[]string{tempDirectory, tempDirectory},
+				fmt.Sprintf("{ \"source\": {\"repository_name\": \"acme-charts\", \"package_name\": \"some-package\", \"api_key\": \"%s\"}, \"version\": {\"created_at\":\"2020-11-25T16:03:42+01:00\",\"version\":\"9.2.4\"} }", apiToken),
+				[]string{tmpDir},
 				"ARTIFACTHUB_BASE_URL=http://"+server.Addr(),
 			)
 
 			Eventually(session).Should(Exit(0))
 
-			var result = resource.GetResponse{}
-			err := json.NewDecoder(bytes.NewBuffer(session.Out.Contents())).Decode(&result)
+		})
+
+		It("it should return the expected response and metadata", func() {
+			var response = resource.GetResponse{}
+			err := json.NewDecoder(bytes.NewBuffer(session.Out.Contents())).Decode(&response)
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(result).To(Equal(resource.GetResponse{
+			Expect(response).To(Equal(resource.GetResponse{
 				Version: resource.Version{
 					CreatedAt: time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
 					Version:   "9.2.4",
 				},
 				Metadata: []*resource.MetadataPair{
-					{
-						Name:  "app_version",
-						Value: "8.5.1-community",
-					},
-					{
-						Name:  "charts_url",
-						Value: "https://acme.github.io/charts",
-					},
-					{
-						Name:  "chart_download_url",
-						Value: "https://git.local/acme/charts/releases/download/some-package-9.2.4/some-package-9.2.4.tgz",
-					},
-					{
-						Name:  "name",
-						Value: "some-package",
-					},
-					{
-						Name:  "organization_name",
-						Value: "Acme",
-					},
-					{
-						Name:  "repository_name",
-						Value: "Acme Charts",
-					},
+					{Name: "version", Value: "9.2.4"},
+					{Name: "app_version", Value: "8.5.1-community"},
+					{Name: "charts_url", Value: "https://acme.github.io/charts"},
+					{Name: "chart_download_url", Value: "https://git.local/acme/charts/releases/download/some-package-9.2.4/some-package-9.2.4.tgz"},
+					{Name: "name", Value: "some-package"},
+					{Name: "organization_name", Value: "Acme"},
+					{Name: "repository_name", Value: "Acme Charts"},
 				},
 			}))
+		})
 
-			file, err := ioutil.ReadFile(tempDirectory + "/app_version")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(file)).To(Equal("8.5.1-community"))
-
-			file, err = ioutil.ReadFile(tempDirectory + "/version")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(file)).To(Equal("9.2.4"))
-
-			file, err = ioutil.ReadFile(tempDirectory + "/name")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(file)).To(Equal("some-package"))
-
-			file, err = ioutil.ReadFile(tempDirectory + "/chart_download_url")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(string(file)).To(Equal("https://git.local/acme/charts/releases/download/some-package-9.2.4/some-package-9.2.4.tgz"))
-
+		It("should create files with details about the given version", func() {
+			testFileContainsExpectedText(tmpDir, "app_version", "8.5.1-community")
+			testFileContainsExpectedText(tmpDir, "version", "9.2.4")
+			testFileContainsExpectedText(tmpDir, "name", "some-package")
+			testFileContainsExpectedText(tmpDir, "chart_download_url",
+				"https://git.local/acme/charts/releases/download/some-package-9.2.4/some-package-9.2.4.tgz")
 		})
 
 	})
 })
+
+func testFileContainsExpectedText(dir string, filename string, expectedText string) {
+	file, err := ioutil.ReadFile(dir + "/" + filename)
+	Expect(err).ToNot(HaveOccurred())
+	Expect(string(file)).To(Equal(expectedText))
+}

@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	resource "github.com/PG2000/artifacthub-resource"
 	"log"
-	"net/http"
 	"os"
-	"time"
 )
 
 func main() {
@@ -20,16 +18,17 @@ func main() {
 		log.Fatalf("failed to unmarshal request: %s", err)
 	}
 
-	if len(os.Args) < 2 {
+	if len(os.Args) < 1 {
 		log.Fatalf("missing arguments")
 	}
 
-	outputDir := os.Args[1]
-
-	var httpClient = &http.Client{Timeout: 10 * time.Second}
+	outputDir := os.Args[0]
 
 	baseUrl := baseUrl()
-	response, err := resource.Get(request, outputDir, resource.NewArtifactHubClient(httpClient, baseUrl))
+
+	client := resource.NewHttpClient()
+
+	response, err := resource.Get(request, outputDir, resource.NewArtifactHubClient(client, baseUrl))
 
 	if err != nil {
 		log.Fatalf("get failed: %s", err)

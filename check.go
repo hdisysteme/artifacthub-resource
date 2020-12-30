@@ -11,7 +11,7 @@ func Check(request CheckRequest, repository ArtifactHub) (CheckResponse, error) 
 	}
 
 	var versions []Version
-	versions, err = repository.ListVersions(Package{
+	versions, err = repository.ListHelmVersions(Package{
 		RepositoryName: request.Source.RepositoryName,
 		PackageName:    request.Source.PackageName,
 		ApiKey:         request.Source.ApiKey,

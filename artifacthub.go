@@ -12,13 +12,17 @@ import (
 // ArtifactHub for testing purposes.
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o fakes/fake_artifacthub.go . ArtifactHub
 type ArtifactHub interface {
-	ListVersions(p Package) ([]Version, error)
+	ListHelmVersions(p Package) ([]Version, error)
 	ListHelmVersion(p Package, version string) (HelmVersion, error)
 }
 
 type ArtifactHubClient struct {
 	client  *http.Client
 	baseUrl string
+}
+
+func NewHttpClient() *http.Client {
+	return &http.Client{Timeout: 10 * time.Second}
 }
 
 func NewArtifactHubClient(client *http.Client, url string) ArtifactHubClient {
@@ -36,12 +40,7 @@ func (a ArtifactHubClient) ListHelmVersion(p Package, version string) (HelmVersi
 		return HelmVersion{}, fmt.Errorf("build new artifacthub http request failed: %s", err)
 	}
 
-	request.Header.Add("User-Agent", "artifacthub-resource/0.1")
-	request.Header.Add("Accept", "application/json")
-
-	if len(p.ApiKey) > 0 {
-		request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", p.ApiKey))
-	}
+	prepareHttpHeader(p, request)
 
 	response, err := a.client.Do(request)
 	if err != nil {
@@ -68,7 +67,7 @@ func (a ArtifactHubClient) ListHelmVersion(p Package, version string) (HelmVersi
 	return target, nil
 }
 
-func (a ArtifactHubClient) ListVersions(p Package) ([]Version, error) {
+func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 
 	url := fmt.Sprintf("%s/api/v1/packages/helm/%s/%s", a.baseUrl, p.RepositoryName, p.PackageName)
 	request, err := http.NewRequest("GET", url, nil)
@@ -77,14 +76,10 @@ func (a ArtifactHubClient) ListVersions(p Package) ([]Version, error) {
 		return nil, fmt.Errorf("build new artifacthub http request failed: %s", err)
 	}
 
-	request.Header.Add("User-Agent", "artifacthub-resource/0.1")
-	request.Header.Add("Accept", "application/json")
-
-	if len(p.ApiKey) > 0 {
-		request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", p.ApiKey))
-	}
+	prepareHttpHeader(p, request)
 
 	response, err := a.client.Do(request)
+
 	if err != nil {
 		return nil, fmt.Errorf("error while requesting artifacthub: %w", err)
 	}
@@ -122,6 +117,15 @@ func (a ArtifactHubClient) ListVersions(p Package) ([]Version, error) {
 
 	return versions, nil
 
+}
+
+func prepareHttpHeader(p Package, request *http.Request) {
+	request.Header.Add("User-Agent", "artifacthub-resource/0.1")
+	request.Header.Add("Accept", "application/json")
+
+	if len(p.ApiKey) > 0 {
+		request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", p.ApiKey))
+	}
 }
 
 type Package struct {
