@@ -37,7 +37,7 @@ func Get(request GetRequest, dir string, repository ArtifactHub) (GetResponse, e
 		return emptyResponse, fmt.Errorf("failed to create output directory: %s", err)
 	}
 	for _, metadatum := range metadata {
-		if err := ioutil.WriteFile(filepath.Join(path, metadatum.Name), []byte(metadatum.Value), 0644); err != nil {
+		if err := ioutil.WriteFile(filepath.Join(path, metadatum.Name), []byte(metadatum.Value), 0600); err != nil {
 			return emptyResponse, fmt.Errorf("failed to write %s: %s", metadatum.Name, err)
 		}
 	}

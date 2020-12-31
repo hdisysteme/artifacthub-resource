@@ -21,7 +21,8 @@ RUN set -e; \
     make generate && \
     make test-format && \
     make test-unit && \
-    make test-e2e
+    make test-e2e && \
+    make gosec
 
 # stage: resource
 FROM ubuntu:focal AS resource

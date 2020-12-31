@@ -1,4 +1,4 @@
-.PHONY: generate test-format test-unit test-e2e dockerize
+.PHONY: generate test-format test-unit test-e2e gosec dockerize
 
 generate:
 	go generate ./...
@@ -12,6 +12,9 @@ test-unit: generate
 
 test-e2e: generate
 	go test -race ./e2e -tags=e2e
+
+gosec:
+	gosec ./...
 
 dockerize:
 	docker build -t pg2000/artifacthub-resource:latest .
