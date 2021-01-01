@@ -27,6 +27,7 @@ jobs:
 
     - name: Build Assets
       run: |
+        mkdir -p /assets
         go build -v -o /assets/check github.com/PG2000/artifacthub-resource/cmd/check
         go build -v -o /assets/check github.com/PG2000/artifacthub-resource/cmd/in
 
