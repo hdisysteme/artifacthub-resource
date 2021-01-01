@@ -32,6 +32,4 @@ jobs:
 
     - name: Test
       run: go test --race -v ./...
-    
-    - name: Test e2E
-      run: go test -race ./e2e -tags=e2
+
