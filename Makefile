@@ -11,11 +11,16 @@ test-unit: generate
 	go test --race -v ./...
 
 test-e2e: generate
-	go test -race ./e2e -tags=e2e
+	go test -race ./e2e -tags=e2
 
 gosec:
 	gosec ./...
 
-dockerize:
+docker-build:
 	docker build -t pg2000/artifacthub-resource:latest .
+
+docker-publish-image: docker-build
 	docker push pg2000/artifacthub-resource:latest
+
+docker-tests:
+	docker build --target tests -t artifacthub-resource-tests .

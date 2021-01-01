@@ -138,20 +138,20 @@ var _ = Describe("E2E In Resource", func() {
 			err := json.NewDecoder(bytes.NewBuffer(session.Out.Contents())).Decode(&response)
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(response).To(Equal(resource.GetResponse{
-				Version: resource.Version{
+			Expect(response.Version).To(Equal(
+				resource.Version{
 					CreatedAt: time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
 					Version:   "9.2.4",
-				},
-				Metadata: []*resource.MetadataPair{
-					{Name: "app_version", Value: "8.5.1-community"},
-					{Name: "charts_url", Value: "https://acme.github.io/charts"},
-					{Name: "chart_download_url", Value: "https://git.local/acme/charts/releases/download/some-package-9.2.4/some-package-9.2.4.tgz"},
-					{Name: "name", Value: "some-package"},
-					{Name: "organization_name", Value: "Acme"},
-					{Name: "repository_name", Value: "Acme Charts"},
-					{Name: "version", Value: "9.2.4"},
-				},
+				}))
+
+			Expect(response.Metadata).To(ConsistOf(resource.Metadata{
+				{Name: "app_version", Value: "8.5.1-community"},
+				{Name: "charts_url", Value: "https://acme.github.io/charts"},
+				{Name: "chart_download_url", Value: "https://git.local/acme/charts/releases/download/some-package-9.2.4/some-package-9.2.4.tgz"},
+				{Name: "name", Value: "some-package"},
+				{Name: "organization_name", Value: "Acme"},
+				{Name: "repository_name", Value: "Acme Charts"},
+				{Name: "version", Value: "9.2.4"},
 			}))
 		})
 

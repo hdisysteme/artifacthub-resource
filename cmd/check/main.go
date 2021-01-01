@@ -17,8 +17,7 @@ func main() {
 		log.Fatalf("failed to unmarshal request: %s", err)
 	}
 
-	response, err := resource.Check(request, resource.NewArtifactHubClient(),
-	)
+	response, err := resource.Check(request, resource.NewArtifactHubClient())
 
 	if err != nil {
 		log.Fatalf("resource check failed with: %s", err)

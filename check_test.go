@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var _ = Describe("ArtifacthubResource", func() {
+var _ = Describe("ArtifacthubResource Check", func() {
 
 	var (
 		artifacthub  *fakes.FakeArtifactHub
@@ -23,31 +23,26 @@ var _ = Describe("ArtifacthubResource", func() {
 
 	When("check is called with missing parameters", func() {
 
-		It("should return an error when package name and repository name are empty", func() {
-			test(createCheckRequest("", "", ""), artifacthub)
-		})
+		testdata := []struct {
+			description    string
+			repositoryName string
+			packageName    string
+			apiKey         string
+		}{
+			{description: "should return an error when package name and repository name are empty", repositoryName: "", packageName: "", apiKey: ""},
+			{description: "should return an error when package name is empty", repositoryName: "acme-charts", packageName: "", apiKey: ""},
+			{description: "should return an error when repository name is empty", repositoryName: "", packageName: "my-package-name", apiKey: ""},
+		}
 
-		It("should return an error when package name is empty", func() {
-			test(createCheckRequest("acme-charts", "", ""), artifacthub)
-		})
+		for _, data := range testdata {
+			It(data.description, func() {
+				test(createCheckRequest(data.repositoryName, data.packageName, data.apiKey), artifacthub)
+			})
+		}
 
-		It("should return an error when repository name is empty", func() {
-			test(createCheckRequest("", "my-package-name", ""), artifacthub)
-		})
-
-		It("should return no error if only apiKey is empty", func() {
-			var packageVersions []resource.Version
-			packageVersions = append(packageVersions, resource.Version{})
-
-			artifacthub.ListVersionsReturns(packageVersions, nil)
-			check, err := resource.Check(createCheckRequest("acme-charts", "my-package-name", ""), artifacthub)
-
-			Expect(check).ToNot(BeNil())
-			Expect(err).ToNot(HaveOccurred())
-		})
 	})
 
-	When("check is called", func() {
+	When("check is called with valid source", func() {
 
 		It("should call list versions with expected parameters", func() {
 			var packageVersions []resource.Version
@@ -57,12 +52,12 @@ var _ = Describe("ArtifacthubResource", func() {
 				CreatedAt: time.Now(),
 			})
 
-			artifacthub.ListVersionsReturns(packageVersions, nil)
+			artifacthub.ListHelmVersionsReturns(packageVersions, nil)
 
 			check, err := resource.Check(checkRequest, artifacthub)
 
-			Expect(artifacthub.ListVersionsCallCount()).To(Equal(1))
-			Expect(artifacthub.ListVersionsArgsForCall(0)).To(Equal(resource.Package{
+			Expect(artifacthub.ListHelmVersionsCallCount()).To(Equal(1))
+			Expect(artifacthub.ListHelmVersionsArgsForCall(0)).To(Equal(resource.Package{
 				RepositoryName: "acme-charts",
 				PackageName:    "my-package-name",
 				ApiKey:         "some-fake-api-key",
@@ -76,7 +71,7 @@ var _ = Describe("ArtifacthubResource", func() {
 	When("list versions fails", func() {
 
 		It("should return an error when call to list versions failed", func() {
-			artifacthub.ListVersionsReturns(nil, fmt.Errorf("some error occured"))
+			artifacthub.ListHelmVersionsReturns(nil, fmt.Errorf("some error occured"))
 			check, err := resource.Check(checkRequest, artifacthub)
 			Expect(err).To(HaveOccurred())
 			Expect(check).To(BeNil())

@@ -26,7 +26,8 @@ func Check(request CheckRequest, repository ArtifactHub) (CheckResponse, error) 
 
 func (c CheckRequest) validate() error {
 	if len(c.Source.PackageName) == 0 || len(c.Source.RepositoryName) == 0 {
-		return fmt.Errorf("package name: %s or repository name: %s should not be empty",
+		return fmt.Errorf(
+			"package name: %s or repository name: %s should not be empty",
 			c.Source.PackageName,
 			c.Source.RepositoryName,
 		)
