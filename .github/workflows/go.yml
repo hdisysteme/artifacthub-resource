@@ -7,29 +7,50 @@ on:
     branches: [ main ]
 
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.15
 
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.15
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+      - name: Get dependencies
+        run: |
+          go get -v -t -d ./...
 
-    - name: Get dependencies
-      run: |
-        go get -v -t -d ./...
+      - name: Build Assets
+        run: |
+          go build -v -o assets/check github.com/PG2000/artifacthub-resource/cmd/check
+          go build -v -o assets/check github.com/PG2000/artifacthub-resource/cmd/in
 
-    - name: Build Assets
-      run: |
-        go build -v -o assets/check github.com/PG2000/artifacthub-resource/cmd/check
-        go build -v -o assets/check github.com/PG2000/artifacthub-resource/cmd/in
-
-    - name: Test
-      run: go test --race -v ./...
-
+      - name: Test
+        run: go test --race -v ./...
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
+          push: true
+          tags: |
+            ghcr.io/pg2000/artifacthub-resource:latest
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
