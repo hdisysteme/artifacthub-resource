@@ -11,7 +11,7 @@ test-unit: generate
 	go test --race -v ./...
 
 test-e2e: generate
-	go test -race ./e2e -tags=e2
+	go test -tags=e2e -race ./e2e
 
 gosec:
 	gosec ./...

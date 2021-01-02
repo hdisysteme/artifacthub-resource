@@ -29,4 +29,7 @@ jobs:
           go build -v -o assets/check github.com/PG2000/artifacthub-resource/cmd/in
 
       - name: Test
-        run: go test --race -v ./...
+        run: go test --cover --race -v ./...
+
+      - name: Test-E2E
+        run: go test -tags=e2e -race ./e2e
