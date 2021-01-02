@@ -139,5 +139,3 @@ var _ = Describe("E2E Check Resource", func() {
 
 	})
 })
-
-

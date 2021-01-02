@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	var request resource.CheckRequest
 
 	decoder := json.NewDecoder(os.Stdin)
