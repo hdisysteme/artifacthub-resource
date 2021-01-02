@@ -52,7 +52,6 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
-          tags: |
-            ghcr.io/pg2000/artifacthub-resource:latest
+          tags: pg2000/artifacthub-resource:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
