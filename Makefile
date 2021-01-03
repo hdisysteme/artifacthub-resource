@@ -1,9 +1,9 @@
-.PHONY: generate test-format test-unit test-e2e gosec dockerize
+.PHONY: generate test-format test-unit test-e2e gosec docker-build docker-publish-image docker-tests dockerize install-tools
 
 generate:
 	go generate ./...
 
-test-format: generate
+test-format:
 	go fmt $(go list ./...)
 	go vet $(go list ./...)
 
@@ -24,3 +24,6 @@ docker-publish-image: docker-build
 
 docker-tests:
 	docker build --target tests -t artifacthub-resource-tests .
+
+install-tools:
+	go list -f '{{range .Imports}}{{.}} {{end}}' ./tools/tools.go | xargs go install
