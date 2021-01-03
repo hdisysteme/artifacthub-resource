@@ -114,7 +114,7 @@ var _ = Describe("E2E Check Resource", func() {
 			session = executeCheckCommand(
 				execPath,
 				fmt.Sprintf("{ \"source\": {\"repository_name\": \"acme-charts\", \"package_name\": \"some-package\", \"api_key\": \"%s\"} }", token),
-				nil,
+				[]string{"/opt/resource/check"},
 				"ARTIFACTHUB_BASE_URL=http://"+server.Addr(),
 			)
 

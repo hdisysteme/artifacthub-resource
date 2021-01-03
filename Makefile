@@ -21,11 +21,11 @@ gosec:
 
 .PHONY: docker-build
 docker-build:
-	docker build -t pg2000/artifacthub-resource:latest .
+	docker build -t pg2000/artifacthub-resource:debug .
 
 .PHONY: docker-publish-image
 docker-publish-image: docker-build
-	docker push pg2000/artifacthub-resource:latest
+	docker push pg2000/artifacthub-resource:debug
 
 .PHONY: docker-tests
 docker-tests:
