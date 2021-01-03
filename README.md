@@ -73,7 +73,6 @@ jobs:
       - task: simple-task
         config:
           inputs:
-            - name: nexus
             - name: sonarqube
           platform: linux
           image_resource:
