@@ -18,11 +18,11 @@ func main() {
 		log.Fatalf("failed to unmarshal request: %s", err)
 	}
 
-	if len(os.Args) < 1 {
+	if len(os.Args) < 2 {
 		log.Fatalf("missing arguments")
 	}
 
-	outputDir := os.Args[0]
+	outputDir := os.Args[1]
 
 	response, err := resource.Get(request, outputDir, resource.NewArtifactHubClient())
 

@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func Get(request GetRequest, dir string, repository ArtifactHub) (GetResponse, error) {
+func Get(request GetRequest, path string, repository ArtifactHub) (GetResponse, error) {
 
 	version, err := repository.ListHelmVersion(Package{
 		RepositoryName: request.Source.RepositoryName,
@@ -30,8 +30,6 @@ func Get(request GetRequest, dir string, repository ArtifactHub) (GetResponse, e
 	metadata.append("organization_name", version.Repository.OrganizationDisplayName)
 	metadata.append("repository_name", version.Repository.DisplayName)
 	metadata.append("version", version.Version)
-
-	path := dir
 
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return emptyResponse, fmt.Errorf("failed to create output directory: %s", err)
