@@ -21,7 +21,26 @@ You can obtain an api key from artifacthub.io by creating an account.
 
 ### check
 
+Produces new versions for a helm chart ordered by the created_at date. 
+
+A version is represented as follows:
+
+- version: The Helm Chart Version
+- created_at: Time of when the helm chart version was published
+
 ### in
+
+Gets the requested version of the helm chart. 
+
+The metadata information are available in your task destination.
+
+- /app_version: The given app version of the helm chart
+- /charts_url: The charts url of the helm chart 
+- /chart_download_url: The url to download the helm chart
+- /name: The name of the helm chart
+- /organization_name: The organization name
+- /repository_name: The repository name
+- /version: The helm chart version
 
 ### out
 
