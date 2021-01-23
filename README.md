@@ -1,5 +1,7 @@
 # Artifacthub Resource
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/PG2000/artifacthub-resource)](https://goreportcard.com/report/github.com/PG2000/artifacthub-resource)
+
 Tracks and get new versions of Helm Charts which are registered 
 at https://artifacthub.io/
 
