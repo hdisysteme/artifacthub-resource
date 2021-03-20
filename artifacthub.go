@@ -3,24 +3,13 @@ package resource
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Masterminds/semver/v3"
 	"net/http"
 	"os"
 	"sort"
 	"strconv"
 	"time"
 )
-
-// ArtifactHub for testing purposes.
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o fakes/fake_artifacthub.go . ArtifactHub
-type ArtifactHub interface {
-	ListHelmVersions(p Package) ([]Version, error)
-	ListHelmVersion(p Package, version string) (HelmVersion, error)
-}
-
-type ArtifactHubClient struct {
-	client  *http.Client
-	baseUrl string
-}
 
 func NewArtifactHubClient() ArtifactHubClient {
 	return ArtifactHubClient{
@@ -99,8 +88,19 @@ func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 	}
 
 	sort.Slice(target.AvailableVersions, func(i, j int) bool {
-		return time.Time(target.AvailableVersions[i].TS).UTC().
-			Before(time.Time(target.AvailableVersions[j].TS).UTC())
+		version, err := semver.NewVersion(target.AvailableVersions[i].Version)
+
+		if err != nil {
+			printError(target.Name, target.AvailableVersions[i])
+		}
+
+		otherVersion, err := semver.NewVersion(target.AvailableVersions[j].Version)
+
+		if err != nil {
+			printError(target.Name, target.AvailableVersions[j])
+		}
+
+		return version.LessThan(otherVersion)
 	})
 
 	var versions []Version
@@ -114,6 +114,14 @@ func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 
 	return versions, nil
 
+}
+
+func printError(name string, target AvailableVersion) (int, error) {
+	return fmt.Println(fmt.Printf(fmt.Sprintf(
+		"Error while getting semver version for package %s and version %s",
+		name,
+		target.Version,
+	)))
 }
 
 func baseUrl() string {
@@ -132,6 +140,34 @@ func prepareHttpHeader(p Package, request *http.Request) {
 	if len(p.ApiKey) > 0 {
 		request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", p.ApiKey))
 	}
+}
+
+func (t Epoch) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("\"%s\"", time.Time(t).Format(time.RFC3339))), nil
+}
+
+func (t *Epoch) UnmarshalJSON(s []byte) (err error) {
+	q, err := strconv.ParseInt(string(s), 10, 64)
+
+	if err != nil {
+		return err
+	}
+	*(*time.Time)(t) = time.Unix(q, 0)
+	return
+}
+
+func (t Epoch) String() string { return time.Time(t).String() }
+
+// ArtifactHub for testing purposes.
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o fakes/fake_artifacthub.go . ArtifactHub
+type ArtifactHub interface {
+	ListHelmVersions(p Package) ([]Version, error)
+	ListHelmVersion(p Package, version string) (HelmVersion, error)
+}
+
+type ArtifactHubClient struct {
+	client  *http.Client
+	baseUrl string
 }
 
 type Package struct {
@@ -167,19 +203,3 @@ type Version struct {
 	TS      time.Time `json:"ts"`
 	Version string    `json:"version"`
 }
-
-func (t Epoch) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("\"%s\"", time.Time(t).Format(time.RFC3339))), nil
-}
-
-func (t *Epoch) UnmarshalJSON(s []byte) (err error) {
-	q, err := strconv.ParseInt(string(s), 10, 64)
-
-	if err != nil {
-		return err
-	}
-	*(*time.Time)(t) = time.Unix(q, 0)
-	return
-}
-
-func (t Epoch) String() string { return time.Time(t).String() }

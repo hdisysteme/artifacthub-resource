@@ -23,7 +23,7 @@ You can obtain an api key from artifacthub.io by creating an account.
 
 ### check
 
-Produces new versions for a helm chart ordered by the created_at date. 
+Produces new versions for a helm chart ordered by the version. 
 
 A version is represented as follows:
 
