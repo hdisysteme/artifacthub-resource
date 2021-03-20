@@ -99,16 +99,16 @@ func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 	}
 
 	sort.Slice(target.AvailableVersions, func(i, j int) bool {
-		return time.Time(target.AvailableVersions[i].CreatedAt).UTC().
-			Before(time.Time(target.AvailableVersions[j].CreatedAt).UTC())
+		return time.Time(target.AvailableVersions[i].TS).UTC().
+			Before(time.Time(target.AvailableVersions[j].TS).UTC())
 	})
 
 	var versions []Version
 
 	for _, version := range target.AvailableVersions {
 		versions = append(versions, Version{
-			CreatedAt: time.Time(version.CreatedAt).UTC(),
-			Version:   version.Version,
+			TS:      time.Time(version.TS).UTC(),
+			Version: version.Version,
 		})
 	}
 
@@ -143,8 +143,8 @@ type Package struct {
 type Epoch time.Time
 
 type AvailableVersion struct {
-	Version   string `json:"version"`
-	CreatedAt Epoch  `json:"created_at"`
+	Version string `json:"version"`
+	TS      Epoch  `json:"ts"`
 }
 
 type Repository struct {
@@ -156,7 +156,7 @@ type Repository struct {
 type HelmVersion struct {
 	AppVersion        string             `json:"app_version"`
 	ContentUrl        string             `json:"content_url"`
-	CreatedAt         Epoch              `json:"created_at"`
+	TS                Epoch              `json:"ts"`
 	Name              string             `json:"name"`
 	Version           string             `json:"version"`
 	AvailableVersions []AvailableVersion `json:"available_versions"`
@@ -164,8 +164,8 @@ type HelmVersion struct {
 }
 
 type Version struct {
-	CreatedAt time.Time `json:"created_at"`
-	Version   string    `json:"version"`
+	TS      time.Time `json:"ts"`
+	Version string    `json:"version"`
 }
 
 func (t Epoch) MarshalJSON() ([]byte, error) {

@@ -27,8 +27,8 @@ var _ = Describe("Artifacthub Resource In", func() {
 				ApiKey:         "some-fake-api-key",
 			},
 			Version: resource.Version{
-				Version:   "9.2.4",
-				CreatedAt: fixedTime,
+				Version: "9.2.4",
+				TS:      fixedTime,
 			},
 		}
 	})
@@ -54,7 +54,7 @@ var _ = Describe("Artifacthub Resource In", func() {
 			artifacthub.ListHelmVersionReturns(resource.HelmVersion{
 				AppVersion:        "8.2.1",
 				ContentUrl:        "https://git.local/",
-				CreatedAt:         resource.Epoch(fixedTime),
+				TS:                resource.Epoch(fixedTime),
 				Name:              "some-package",
 				Version:           "9.2.4",
 				AvailableVersions: nil,
@@ -69,8 +69,8 @@ var _ = Describe("Artifacthub Resource In", func() {
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(response.Version).To(Equal(resource.Version{
-				Version:   "9.2.4",
-				CreatedAt: fixedTime,
+				Version: "9.2.4",
+				TS:      fixedTime,
 			}))
 
 			Expect(response.Metadata).To(ConsistOf(resource.Metadata{

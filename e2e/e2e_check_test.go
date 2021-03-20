@@ -52,11 +52,11 @@ var _ = Describe("E2E Check Resource", func() {
   "available_versions": [
     {
       "version": "9.2.0",
-      "created_at": 1605806528
+      "ts": 1605806528
     },
     {
       "version": "9.2.4",
-      "created_at": 1606316622
+      "ts": 1606316622
     }
   ],
   "app_version": "8.5.1-community",
@@ -66,7 +66,7 @@ var _ = Describe("E2E Check Resource", func() {
   "content_url": "https://git.local/acme/charts/releases/download/some-package-9.2.4/some-package-9.2.4.tgz",
   "has_values_schema": false,
   "has_changelog": false,
-  "created_at": 1606316622,
+  "ts": 1606316622,
   "maintainers": [
     {
       "name": "acme",
@@ -126,12 +126,12 @@ var _ = Describe("E2E Check Resource", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(Equal(resource.CheckResponse{
 				{
-					CreatedAt: time.Date(2020, 11, 19, 17, 22, 8, 0, time.UTC),
-					Version:   "9.2.0",
+					TS:      time.Date(2020, 11, 19, 17, 22, 8, 0, time.UTC),
+					Version: "9.2.0",
 				},
 				{
-					CreatedAt: time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
-					Version:   "9.2.4",
+					TS:      time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
+					Version: "9.2.4",
 				},
 			}))
 
