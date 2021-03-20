@@ -126,12 +126,12 @@ var _ = Describe("E2E Check Resource", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(Equal(resource.CheckResponse{
 				{
-					TS:      time.Date(2020, 11, 19, 17, 22, 8, 0, time.UTC),
-					Version: "9.2.0",
+					CreatedAt: time.Date(2020, 11, 19, 17, 22, 8, 0, time.UTC),
+					Version:   "9.2.0",
 				},
 				{
-					TS:      time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
-					Version: "9.2.4",
+					CreatedAt: time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
+					Version:   "9.2.4",
 				},
 			}))
 
@@ -163,16 +163,16 @@ var _ = Describe("E2E Check Resource", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(Equal(resource.CheckResponse{
 				{
-					TS:      time.Date(2020, 11, 26, 15, 42, 23, 0, time.UTC),
-					Version: "9.1.5",
+					CreatedAt: time.Date(2020, 11, 26, 15, 42, 23, 0, time.UTC),
+					Version:   "9.1.5",
 				},
 				{
-					TS:      time.Date(2020, 11, 19, 17, 22, 8, 0, time.UTC),
-					Version: "9.2.0",
+					CreatedAt: time.Date(2020, 11, 19, 17, 22, 8, 0, time.UTC),
+					Version:   "9.2.0",
 				},
 				{
-					TS:      time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
-					Version: "9.2.4",
+					CreatedAt: time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
+					Version:   "9.2.4",
 				},
 			}))
 

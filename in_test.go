@@ -27,8 +27,8 @@ var _ = Describe("Artifacthub Resource In", func() {
 				ApiKey:         "some-fake-api-key",
 			},
 			Version: resource.Version{
-				Version: "9.2.4",
-				TS:      fixedTime,
+				Version:   "9.2.4",
+				CreatedAt: fixedTime,
 			},
 		}
 	})
@@ -69,8 +69,8 @@ var _ = Describe("Artifacthub Resource In", func() {
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(response.Version).To(Equal(resource.Version{
-				Version: "9.2.4",
-				TS:      fixedTime,
+				Version:   "9.2.4",
+				CreatedAt: fixedTime,
 			}))
 
 			Expect(response.Metadata).To(ConsistOf(resource.Metadata{

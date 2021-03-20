@@ -107,8 +107,8 @@ func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 
 	for _, version := range target.AvailableVersions {
 		versions = append(versions, Version{
-			TS:      time.Time(version.TS).UTC(),
-			Version: version.Version,
+			CreatedAt: time.Time(version.TS).UTC(),
+			Version:   version.Version,
 		})
 	}
 
@@ -200,6 +200,6 @@ type HelmVersion struct {
 }
 
 type Version struct {
-	TS      time.Time `json:"ts"`
-	Version string    `json:"version"`
+	CreatedAt time.Time `json:"created_at"`
+	Version   string    `json:"version"`
 }
