@@ -124,7 +124,7 @@ var _ = Describe("E2E In Resource", func() {
 
 			session = executeCheckCommand(
 				execPath,
-				fmt.Sprintf("{ \"source\": {\"repository_name\": \"acme-charts\", \"package_name\": \"some-package\", \"api_key\": \"%s\"}, \"version\": {\"ts\":\"2020-11-25T16:03:42+01:00\",\"version\":\"9.2.4\"} }", apiToken),
+				fmt.Sprintf("{ \"source\": {\"repository_name\": \"acme-charts\", \"package_name\": \"some-package\", \"api_key\": \"%s\"}, \"version\": {\"created_at\":\"2020-11-25T16:03:42+01:00\",\"version\":\"9.2.4\"} }", apiToken),
 				[]string{"/opt/resource/in", tmpDir},
 				"ARTIFACTHUB_BASE_URL=http://"+server.Addr(),
 			)
@@ -140,8 +140,8 @@ var _ = Describe("E2E In Resource", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(response.Version).To(Equal(
 				resource.Version{
-					TS:      time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
-					Version: "9.2.4",
+					CreatedAt: time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
+					Version:   "9.2.4",
 				}))
 
 			Expect(response.Metadata).To(ConsistOf(resource.Metadata{

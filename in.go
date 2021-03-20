@@ -42,8 +42,8 @@ func Get(request GetRequest, path string, repository ArtifactHub) (GetResponse, 
 
 	return GetResponse{
 		Version: Version{
-			TS:      time.Time(version.TS).UTC(),
-			Version: version.Version,
+			CreatedAt: time.Time(version.TS).UTC(),
+			Version:   version.Version,
 		},
 		Metadata: metadata,
 	}, nil

@@ -48,8 +48,8 @@ var _ = Describe("ArtifacthubResource Check", func() {
 			var packageVersions []resource.Version
 
 			packageVersions = append(packageVersions, resource.Version{
-				Version: "9.2.4",
-				TS:      time.Now(),
+				Version:   "9.2.4",
+				CreatedAt: time.Now(),
 			})
 
 			artifacthub.ListHelmVersionsReturns(packageVersions, nil)
