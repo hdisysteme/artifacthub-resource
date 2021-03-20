@@ -55,15 +55,15 @@ var _ = Describe("E2E In Resource", func() {
   "available_versions": [
     {
       "version": "9.2.0",
-      "created_at": 1605806528
+      "ts": 1605806528
     },
     {
       "version": "9.2.4",
-      "created_at": 1606316622
+      "ts": 1606316622
     },
     {
       "version": "9.1.2",
-      "created_at": 1604507915
+      "ts": 1604507915
     }
   ],
   "app_version": "8.5.1-community",
@@ -73,7 +73,7 @@ var _ = Describe("E2E In Resource", func() {
   "content_url": "https://git.local/acme/charts/releases/download/some-package-9.2.4/some-package-9.2.4.tgz",
   "has_values_schema": false,
   "has_changelog": false,
-  "created_at": 1606316622,
+  "ts": 1606316622,
   "maintainers": [
     {
       "name": "acme",
@@ -124,7 +124,7 @@ var _ = Describe("E2E In Resource", func() {
 
 			session = executeCheckCommand(
 				execPath,
-				fmt.Sprintf("{ \"source\": {\"repository_name\": \"acme-charts\", \"package_name\": \"some-package\", \"api_key\": \"%s\"}, \"version\": {\"created_at\":\"2020-11-25T16:03:42+01:00\",\"version\":\"9.2.4\"} }", apiToken),
+				fmt.Sprintf("{ \"source\": {\"repository_name\": \"acme-charts\", \"package_name\": \"some-package\", \"api_key\": \"%s\"}, \"version\": {\"ts\":\"2020-11-25T16:03:42+01:00\",\"version\":\"9.2.4\"} }", apiToken),
 				[]string{"/opt/resource/in", tmpDir},
 				"ARTIFACTHUB_BASE_URL=http://"+server.Addr(),
 			)
@@ -140,8 +140,8 @@ var _ = Describe("E2E In Resource", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(response.Version).To(Equal(
 				resource.Version{
-					CreatedAt: time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
-					Version:   "9.2.4",
+					TS:      time.Date(2020, 11, 25, 15, 3, 42, 0, time.UTC),
+					Version: "9.2.4",
 				}))
 
 			Expect(response.Metadata).To(ConsistOf(resource.Metadata{
