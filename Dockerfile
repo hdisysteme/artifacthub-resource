@@ -9,8 +9,8 @@ COPY . .
 
 ENV CGO_ENABLED 0
 
-RUN go build -o /assets/check github.com/PG2000/artifacthub-resource/cmd/check
-RUN go build -o /assets/in github.com/PG2000/artifacthub-resource/cmd/in
+RUN go build -o /assets/check github.com/hdisysteme/artifacthub-resource/cmd/check
+RUN go build -o /assets/in github.com/hdisysteme/artifacthub-resource/cmd/in
 RUN cp cmd/out/out /assets/out
 
 # stage: tests

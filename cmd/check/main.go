@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	resource "github.com/PG2000/artifacthub-resource"
+	resource "github.com/hdisysteme/artifacthub-resource"
 	"log"
 	"os"
 )
