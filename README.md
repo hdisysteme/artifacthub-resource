@@ -1,6 +1,6 @@
 # Artifacthub Resource
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/PG2000/artifacthub-resource)](https://goreportcard.com/report/github.com/PG2000/artifacthub-resource)
+[![Go Report Card](https://goreportcard.com/badge/github.com/hdisysteme/artifacthub-resource)](https://goreportcard.com/report/github.com/hdisysteme/artifacthub-resource)
 
 Tracks and get new versions of Helm Charts which are registered 
 at https://artifacthub.io/
@@ -56,7 +56,7 @@ resource_types:
 - name: artifacthub
   type: docker-image
   source:
-    repository: pg2000/artifacthub-resource
+    repository: ghcr.io/hdisysteme/artifacthub-resource
     tag: latest
 
 resources:

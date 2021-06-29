@@ -25,8 +25,8 @@ jobs:
 
       - name: Build Assets
         run: |
-          go build -v -o assets/check github.com/PG2000/artifacthub-resource/cmd/check
-          go build -v -o assets/check github.com/PG2000/artifacthub-resource/cmd/in
+          go build -v -o assets/check github.com/hdisysteme/artifacthub-resource/cmd/check
+          go build -v -o assets/check github.com/hdisysteme/artifacthub-resource/cmd/in
 
       - name: Test
         run: go test --cover --race -v ./...

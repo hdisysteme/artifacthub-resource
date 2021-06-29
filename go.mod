@@ -1,4 +1,4 @@
-module github.com/PG2000/artifacthub-resource
+module github.com/hdisysteme/artifacthub-resource
 
 go 1.15
 

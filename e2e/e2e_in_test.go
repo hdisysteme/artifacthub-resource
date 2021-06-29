@@ -6,7 +6,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	resource "github.com/PG2000/artifacthub-resource"
+	resource "github.com/hdisysteme/artifacthub-resource"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gexec"
@@ -96,7 +96,7 @@ var _ = Describe("E2E In Resource", func() {
 	)
 
 	BeforeEach(func() {
-		execPath = buildExec("github.com/PG2000/artifacthub-resource/cmd/in")
+		execPath = buildExec("github.com/hdisysteme/artifacthub-resource/cmd/in")
 		server = ghttp.NewServer()
 		apiToken = "MY_SECRET_TOKEN"
 

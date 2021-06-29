@@ -4,7 +4,7 @@ package fakes
 import (
 	"sync"
 
-	resource "github.com/PG2000/artifacthub-resource"
+	resource "github.com/hdisysteme/artifacthub-resource"
 )
 
 type FakeArtifactHub struct {
