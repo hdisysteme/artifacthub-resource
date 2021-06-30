@@ -12,9 +12,10 @@ import (
 var _ = Describe("Artifacthub Resource In", func() {
 
 	var (
-		artifacthub *fakes.FakeArtifactHub
-		getRequest  resource.GetRequest
-		fixedTime   time.Time
+		artifacthub     *fakes.FakeArtifactHub
+		getRequest      resource.GetRequest
+		fixedTime       time.Time
+		testHelmVersion *resource.HelmVersion
 	)
 
 	BeforeEach(func() {
@@ -31,10 +32,26 @@ var _ = Describe("Artifacthub Resource In", func() {
 				CreatedAt: fixedTime,
 			},
 		}
+		testHelmVersion = &resource.HelmVersion{
+			AppVersion:        "8.2.1",
+			ContentUrl:        "https://git.local/",
+			TS:                resource.Epoch(fixedTime),
+			Name:              "some-package",
+			Version:           "9.2.4",
+			AvailableVersions: nil,
+			Repository: resource.Repository{
+				Url:                     "https://git.local/some-package/",
+				DisplayName:             "Some Package",
+				OrganizationDisplayName: "Acme Charts",
+			},
+		}
 	})
 
 	When("in is called with valid arguments", func() {
 		It("should call list helm version with specific version", func() {
+
+			artifacthub.ListHelmVersionReturns(testHelmVersion, nil)
+
 			_, err := resource.Get(getRequest, os.TempDir(), artifacthub)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -51,19 +68,7 @@ var _ = Describe("Artifacthub Resource In", func() {
 
 		It("should return a repsonse with expected version and metadata", func() {
 
-			artifacthub.ListHelmVersionReturns(resource.HelmVersion{
-				AppVersion:        "8.2.1",
-				ContentUrl:        "https://git.local/",
-				TS:                resource.Epoch(fixedTime),
-				Name:              "some-package",
-				Version:           "9.2.4",
-				AvailableVersions: nil,
-				Repository: resource.Repository{
-					Url:                     "https://git.local/some-package/",
-					DisplayName:             "Some Package",
-					OrganizationDisplayName: "Acme Charts",
-				},
-			}, nil)
+			artifacthub.ListHelmVersionReturns(testHelmVersion, nil)
 
 			response, err := resource.Get(getRequest, os.TempDir(), artifacthub)
 

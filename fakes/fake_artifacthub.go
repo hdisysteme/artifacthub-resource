@@ -8,18 +8,18 @@ import (
 )
 
 type FakeArtifactHub struct {
-	ListHelmVersionStub        func(resource.Package, string) (resource.HelmVersion, error)
+	ListHelmVersionStub        func(resource.Package, string) (*resource.HelmVersion, error)
 	listHelmVersionMutex       sync.RWMutex
 	listHelmVersionArgsForCall []struct {
 		arg1 resource.Package
 		arg2 string
 	}
 	listHelmVersionReturns struct {
-		result1 resource.HelmVersion
+		result1 *resource.HelmVersion
 		result2 error
 	}
 	listHelmVersionReturnsOnCall map[int]struct {
-		result1 resource.HelmVersion
+		result1 *resource.HelmVersion
 		result2 error
 	}
 	ListHelmVersionsStub        func(resource.Package) ([]resource.Version, error)
@@ -39,7 +39,7 @@ type FakeArtifactHub struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeArtifactHub) ListHelmVersion(arg1 resource.Package, arg2 string) (resource.HelmVersion, error) {
+func (fake *FakeArtifactHub) ListHelmVersion(arg1 resource.Package, arg2 string) (*resource.HelmVersion, error) {
 	fake.listHelmVersionMutex.Lock()
 	ret, specificReturn := fake.listHelmVersionReturnsOnCall[len(fake.listHelmVersionArgsForCall)]
 	fake.listHelmVersionArgsForCall = append(fake.listHelmVersionArgsForCall, struct {
@@ -65,7 +65,7 @@ func (fake *FakeArtifactHub) ListHelmVersionCallCount() int {
 	return len(fake.listHelmVersionArgsForCall)
 }
 
-func (fake *FakeArtifactHub) ListHelmVersionCalls(stub func(resource.Package, string) (resource.HelmVersion, error)) {
+func (fake *FakeArtifactHub) ListHelmVersionCalls(stub func(resource.Package, string) (*resource.HelmVersion, error)) {
 	fake.listHelmVersionMutex.Lock()
 	defer fake.listHelmVersionMutex.Unlock()
 	fake.ListHelmVersionStub = stub
@@ -78,28 +78,28 @@ func (fake *FakeArtifactHub) ListHelmVersionArgsForCall(i int) (resource.Package
 	return argsForCall.arg1, argsForCall.arg2
 }
 
-func (fake *FakeArtifactHub) ListHelmVersionReturns(result1 resource.HelmVersion, result2 error) {
+func (fake *FakeArtifactHub) ListHelmVersionReturns(result1 *resource.HelmVersion, result2 error) {
 	fake.listHelmVersionMutex.Lock()
 	defer fake.listHelmVersionMutex.Unlock()
 	fake.ListHelmVersionStub = nil
 	fake.listHelmVersionReturns = struct {
-		result1 resource.HelmVersion
+		result1 *resource.HelmVersion
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeArtifactHub) ListHelmVersionReturnsOnCall(i int, result1 resource.HelmVersion, result2 error) {
+func (fake *FakeArtifactHub) ListHelmVersionReturnsOnCall(i int, result1 *resource.HelmVersion, result2 error) {
 	fake.listHelmVersionMutex.Lock()
 	defer fake.listHelmVersionMutex.Unlock()
 	fake.ListHelmVersionStub = nil
 	if fake.listHelmVersionReturnsOnCall == nil {
 		fake.listHelmVersionReturnsOnCall = make(map[int]struct {
-			result1 resource.HelmVersion
+			result1 *resource.HelmVersion
 			result2 error
 		})
 	}
 	fake.listHelmVersionReturnsOnCall[i] = struct {
-		result1 resource.HelmVersion
+		result1 *resource.HelmVersion
 		result2 error
 	}{result1, result2}
 }

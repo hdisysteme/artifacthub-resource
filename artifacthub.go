@@ -18,25 +18,25 @@ func NewArtifactHubClient() ArtifactHubClient {
 	}
 }
 
-func (a ArtifactHubClient) ListHelmVersion(p Package, version string) (HelmVersion, error) {
+func (a ArtifactHubClient) ListHelmVersion(p Package, version string) (*HelmVersion, error) {
 	url := fmt.Sprintf("%s/api/v1/packages/helm/%s/%s/%s", a.baseUrl, p.RepositoryName, p.PackageName, version)
 	request, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
-		return HelmVersion{}, fmt.Errorf("build new artifacthub http request failed: %s", err)
+		return nil, fmt.Errorf("build new artifacthub http request failed: %s", err)
 	}
 
 	prepareHttpHeader(p, request)
 
 	response, err := a.client.Do(request)
 	if err != nil {
-		return HelmVersion{}, fmt.Errorf("error while requesting artifacthub: %w", err)
+		return nil, fmt.Errorf("error while requesting artifacthub: %w", err)
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		return HelmVersion{}, fmt.Errorf(
+		return nil, fmt.Errorf(
 			"artifacthub http request returned status code: %d with message: %w",
 			response.StatusCode,
 			err,
@@ -47,10 +47,10 @@ func (a ArtifactHubClient) ListHelmVersion(p Package, version string) (HelmVersi
 	err = json.NewDecoder(response.Body).Decode(&target)
 
 	if err != nil {
-		return HelmVersion{}, fmt.Errorf("could not marshal JSON: %s", err)
+		return nil, fmt.Errorf("could not marshal JSON: %s", err)
 	}
 
-	return target, nil
+	return &target, nil
 }
 
 func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
@@ -162,7 +162,7 @@ func (t Epoch) String() string { return time.Time(t).String() }
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o fakes/fake_artifacthub.go . ArtifactHub
 type ArtifactHub interface {
 	ListHelmVersions(p Package) ([]Version, error)
-	ListHelmVersion(p Package, version string) (HelmVersion, error)
+	ListHelmVersion(p Package, version string) (*HelmVersion, error)
 }
 
 type ArtifactHubClient struct {
