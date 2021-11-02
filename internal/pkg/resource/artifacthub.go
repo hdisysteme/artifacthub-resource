@@ -1,3 +1,4 @@
+// Package resource provides functions for obtaining artifacthub.io Helm Chart versions
 package resource
 
 import (
@@ -11,13 +12,24 @@ import (
 	"time"
 )
 
+// NewArtifactHubClient returns an ArtifactHubClient that contains a HTTP client that is already preconfigured.
+//
+// The contained http.Client is configured as follows.
+// http.Timeout = 10sec
+// http.Transport = http.ProxyFromEnvironment
+//
+// The Base URL is https://artifacthub.io and can be overwritten by the Environment Variable ARTIFACTHUB_BASE_URL
 func NewArtifactHubClient() ArtifactHubClient {
 	return ArtifactHubClient{
-		client:  &http.Client{Timeout: 10 * time.Second},
+		client: &http.Client{
+			Timeout:   10 * time.Second,
+			Transport: &http.Transport{Proxy: http.ProxyFromEnvironment},
+		},
 		baseUrl: baseUrl(),
 	}
 }
 
+// ListHelmVersion returns a specific HelmVersion of the given Package
 func (a ArtifactHubClient) ListHelmVersion(p Package, version string) (*HelmVersion, error) {
 	url := fmt.Sprintf("%s/api/v1/packages/helm/%s/%s/%s", a.baseUrl, p.RepositoryName, p.PackageName, version)
 	request, err := http.NewRequest("GET", url, nil)
@@ -53,6 +65,8 @@ func (a ArtifactHubClient) ListHelmVersion(p Package, version string) (*HelmVers
 	return &target, nil
 }
 
+// ListHelmVersions lists all available versions for the given Package
+// The []Version is returned in descending order of the Version
 func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 
 	url := fmt.Sprintf("%s/api/v1/packages/helm/%s/%s", a.baseUrl, p.RepositoryName, p.PackageName)
@@ -158,13 +172,14 @@ func (t *Epoch) UnmarshalJSON(s []byte) (err error) {
 
 func (t Epoch) String() string { return time.Time(t).String() }
 
-// ArtifactHub for testing purposes.
+// ArtifactHub is the interface implemented by
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o fakes/fake_artifacthub.go . ArtifactHub
 type ArtifactHub interface {
 	ListHelmVersions(p Package) ([]Version, error)
 	ListHelmVersion(p Package, version string) (*HelmVersion, error)
 }
 
+// ArtifactHubClient is used to query the artifacthub.io endpoint.
 type ArtifactHubClient struct {
 	client  *http.Client
 	baseUrl string

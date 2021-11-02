@@ -1,8 +1,8 @@
 package resource_test
 
 import (
-	resource "github.com/hdisysteme/artifacthub-resource"
 	"github.com/hdisysteme/artifacthub-resource/fakes"
+	"github.com/hdisysteme/artifacthub-resource/internal/pkg/resource"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"os"
@@ -66,7 +66,7 @@ var _ = Describe("Artifacthub Resource In", func() {
 
 		})
 
-		It("should return a repsonse with expected version and metadata", func() {
+		It("should return a response with expected version and metadata", func() {
 
 			artifacthub.ListHelmVersionReturns(testHelmVersion, nil)
 
