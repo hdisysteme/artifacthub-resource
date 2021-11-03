@@ -2,8 +2,9 @@
 package fakes
 
 import (
-	"github.com/hdisysteme/artifacthub-resource/internal/pkg/resource"
 	"sync"
+
+	"github.com/hdisysteme/artifacthub-resource/internal/pkg/resource"
 )
 
 type FakeArtifactHub struct {

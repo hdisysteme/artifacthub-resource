@@ -2,8 +2,8 @@ package resource_test
 
 import (
 	"fmt"
-	resource "github.com/hdisysteme/artifacthub-resource"
 	"github.com/hdisysteme/artifacthub-resource/fakes"
+	"github.com/hdisysteme/artifacthub-resource/internal/pkg/resource"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"time"

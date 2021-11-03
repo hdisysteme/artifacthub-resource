@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// Get metadata for GetRequest will fetch meta information for the given helm chart version
 func Get(request GetRequest, path string, repository ArtifactHub) (GetResponse, error) {
 
 	version, err := repository.ListHelmVersion(Package{

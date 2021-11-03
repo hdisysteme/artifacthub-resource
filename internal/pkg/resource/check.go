@@ -2,6 +2,7 @@ package resource
 
 import "fmt"
 
+// Check for CheckRequest will fetch all versions of a given helm chart
 func Check(request CheckRequest, repository ArtifactHub) (CheckResponse, error) {
 
 	err := request.validate()

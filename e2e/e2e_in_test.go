@@ -6,7 +6,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	resource "github.com/hdisysteme/artifacthub-resource"
+	"github.com/hdisysteme/artifacthub-resource/internal/pkg/resource"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gexec"
