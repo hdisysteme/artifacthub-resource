@@ -1,5 +1,5 @@
 # stage: builder
-FROM golang:1.17-alpine3.14 AS builder
+FROM golang:1.17-buster AS builder
 
 WORKDIR /concourse/concourse-resource
 COPY go.mod .
