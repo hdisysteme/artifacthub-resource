@@ -29,7 +29,8 @@ func Get(request GetRequest, path string, repository ArtifactHub) (GetResponse, 
 	metadata.append("chart_download_url", version.ContentUrl)
 	metadata.append("name", version.Name)
 	metadata.append("organization_name", version.Repository.OrganizationDisplayName)
-	metadata.append("repository_name", version.Repository.DisplayName)
+	metadata.append("repository_name", version.Repository.Name)
+	metadata.append("repository_display_name", version.Repository.DisplayName)
 	metadata.append("version", version.Version)
 
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
