@@ -201,6 +201,7 @@ type AvailableVersion struct {
 type Repository struct {
 	Url                     string `json:"url"`
 	DisplayName             string `json:"display_name"`
+	Name                    string `json:"name"`
 	OrganizationDisplayName string `json:"organization_display_name"`
 }
 

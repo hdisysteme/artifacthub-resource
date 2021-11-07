@@ -42,6 +42,7 @@ var _ = Describe("Artifacthub Resource In", func() {
 			Repository: resource.Repository{
 				Url:                     "https://git.local/some-package/",
 				DisplayName:             "Some Package",
+				Name:                    "some-package",
 				OrganizationDisplayName: "Acme Charts",
 			},
 		}
@@ -101,6 +102,10 @@ var _ = Describe("Artifacthub Resource In", func() {
 				},
 				{
 					Name:  "repository_name",
+					Value: "some-package",
+				},
+				{
+					Name:  "repository_display_name",
 					Value: "Some Package",
 				},
 				{

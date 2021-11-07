@@ -150,7 +150,8 @@ var _ = Describe("E2E In Resource", func() {
 				{Name: "chart_download_url", Value: "https://git.local/acme/charts/releases/download/some-package-9.2.4/some-package-9.2.4.tgz"},
 				{Name: "name", Value: "some-package"},
 				{Name: "organization_name", Value: "Acme"},
-				{Name: "repository_name", Value: "Acme Charts"},
+				{Name: "repository_name", Value: "acme-charts"},
+				{Name: "repository_display_name", Value: "Acme Charts"},
 				{Name: "version", Value: "9.2.4"},
 			}))
 		})

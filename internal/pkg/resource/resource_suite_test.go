@@ -9,5 +9,5 @@ import (
 
 func TestArtifacthubResource(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "ArtifacthubResource Suite")
+	RunSpecs(t, "ArtifacthubResource Resource Suite")
 }
