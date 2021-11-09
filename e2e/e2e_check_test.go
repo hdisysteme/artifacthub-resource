@@ -1,3 +1,4 @@
+//go:build e2e
 // +build e2e
 
 package e2e_test
@@ -120,11 +121,11 @@ var _ = Describe("E2E Check Resource", func() {
 
 			Eventually(session).Should(Exit(0))
 
-			var result = resource.CheckResponse{}
+			var result []resource.Version
 			err := json.NewDecoder(bytes.NewBuffer(session.Out.Contents())).Decode(&result)
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(result).To(Equal(resource.CheckResponse{
+			Expect(result).To(Equal([]resource.Version{
 				{
 					CreatedAt: time.Date(2020, 11, 19, 17, 22, 8, 0, time.UTC),
 					Version:   "9.2.0",
@@ -157,11 +158,11 @@ var _ = Describe("E2E Check Resource", func() {
 
 			Eventually(session).Should(Exit(0))
 
-			var result = resource.CheckResponse{}
+			var result = []resource.Version{}
 			err := json.NewDecoder(bytes.NewBuffer(session.Out.Contents())).Decode(&result)
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(result).To(Equal(resource.CheckResponse{
+			Expect(result).To(Equal([]resource.Version{
 				{
 					CreatedAt: time.Date(2020, 11, 26, 15, 42, 23, 0, time.UTC),
 					Version:   "9.1.5",

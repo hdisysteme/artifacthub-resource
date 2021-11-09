@@ -62,7 +62,7 @@ var _ = Describe("ArtifacthubResource Check", func() {
 				PackageName:    "my-package-name",
 				ApiKey:         "some-fake-api-key",
 			}))
-			Expect(check).To(HaveLen(1))
+			Expect(*check).To(HaveLen(1))
 			Expect(err).ToNot(HaveOccurred())
 
 		})

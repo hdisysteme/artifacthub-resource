@@ -9,7 +9,7 @@ import (
 )
 
 // Get metadata for GetRequest will fetch meta information for the given helm chart version
-func Get(request GetRequest, path string, repository ArtifactHub) (GetResponse, error) {
+func Get(request GetRequest, path string, repository ArtifactHub) (*GetResponse, error) {
 
 	version, err := repository.ListHelmVersion(Package{
 		RepositoryName: request.Source.RepositoryName,
@@ -17,10 +17,8 @@ func Get(request GetRequest, path string, repository ArtifactHub) (GetResponse, 
 		ApiKey:         request.Source.ApiKey,
 	}, request.Version.Version)
 
-	emptyResponse := GetResponse{}
-
 	if err != nil {
-		return emptyResponse, err
+		return nil, err
 	}
 
 	var metadata = Metadata{}
@@ -34,15 +32,15 @@ func Get(request GetRequest, path string, repository ArtifactHub) (GetResponse, 
 	metadata.append("version", version.Version)
 
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
-		return emptyResponse, fmt.Errorf("failed to create output directory: %s", err)
+		return nil, fmt.Errorf("failed to create output directory: %s", err)
 	}
 	for _, metadatum := range metadata {
 		if err := ioutil.WriteFile(filepath.Join(path, metadatum.Name), []byte(metadatum.Value), 0600); err != nil {
-			return emptyResponse, fmt.Errorf("failed to write %s: %s", metadatum.Name, err)
+			return nil, fmt.Errorf("failed to write %s: %s", metadatum.Name, err)
 		}
 	}
 
-	return GetResponse{
+	return &GetResponse{
 		Version: Version{
 			CreatedAt: time.Time(version.TS).UTC(),
 			Version:   version.Version,
