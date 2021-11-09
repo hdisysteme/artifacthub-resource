@@ -173,7 +173,7 @@ func (t *Epoch) UnmarshalJSON(s []byte) (err error) {
 func (t Epoch) String() string { return time.Time(t).String() }
 
 // ArtifactHub is the interface implemented by
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o fakes/fake_artifacthub.go . ArtifactHub
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o ./fakes/fake_artifacthub.go . ArtifactHub
 type ArtifactHub interface {
 	ListHelmVersions(p Package) ([]Version, error)
 	ListHelmVersion(p Package, version string) (*HelmVersion, error)

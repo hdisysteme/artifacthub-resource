@@ -13,7 +13,7 @@ test-unit: generate
 
 .PHONY: test-e2e
 test-e2e: generate
-	go test -count=1 -tags=e2e -race ./e2e
+	go test -count=1 -tags=e2e -race -v ./e2e
 
 .PHONY: gosec
 gosec:
