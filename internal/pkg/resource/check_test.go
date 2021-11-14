@@ -71,7 +71,7 @@ var _ = Describe("ArtifacthubResource Check", func() {
 	When("list versions fails", func() {
 
 		It("should return an error when call to list versions failed", func() {
-			artifacthub.ListHelmVersionsReturns(nil, fmt.Errorf("some error occured"))
+			artifacthub.ListHelmVersionsReturns(nil, fmt.Errorf("some error occurred"))
 			check, err := resource.Check(checkRequest, artifacthub)
 			Expect(err).To(HaveOccurred())
 			Expect(check).To(BeNil())
