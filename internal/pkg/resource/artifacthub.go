@@ -105,13 +105,13 @@ func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 		version, err := semver.NewVersion(target.AvailableVersions[i].Version)
 
 		if err != nil {
-			printError(target.Name, target.AvailableVersions[i])
+			printError(target.Name, target.AvailableVersions[i], nil)
 		}
 
 		otherVersion, err := semver.NewVersion(target.AvailableVersions[j].Version)
 
 		if err != nil {
-			printError(target.Name, target.AvailableVersions[j])
+			printError(target.Name, target.AvailableVersions[j], err)
 		}
 
 		return version.LessThan(otherVersion)
@@ -130,12 +130,13 @@ func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 
 }
 
-func printError(name string, target AvailableVersion) (int, error) {
-	return fmt.Println(fmt.Printf(fmt.Sprintf(
-		"Error while getting semver version for package %s and version %s",
+func printError(name string, target AvailableVersion, err error) {
+	fmt.Println(fmt.Sprintf(
+		"Error while getting semver version for package %s and version %s with error: %v",
 		name,
 		target.Version,
-	)))
+		err,
+	))
 }
 
 func baseUrl() string {
@@ -173,7 +174,7 @@ func (t *Epoch) UnmarshalJSON(s []byte) (err error) {
 func (t Epoch) String() string { return time.Time(t).String() }
 
 // ArtifactHub is the interface implemented by
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o fakes/fake_artifacthub.go . ArtifactHub
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o ./fakes/fake_artifacthub.go . ArtifactHub
 type ArtifactHub interface {
 	ListHelmVersions(p Package) ([]Version, error)
 	ListHelmVersion(p Package, version string) (*HelmVersion, error)

@@ -1,8 +1,8 @@
 package resource_test
 
 import (
-	"github.com/hdisysteme/artifacthub-resource/fakes"
 	"github.com/hdisysteme/artifacthub-resource/internal/pkg/resource"
+	"github.com/hdisysteme/artifacthub-resource/internal/pkg/resource/fakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"os"

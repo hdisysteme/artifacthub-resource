@@ -2,8 +2,8 @@ package resource_test
 
 import (
 	"fmt"
-	"github.com/hdisysteme/artifacthub-resource/fakes"
 	"github.com/hdisysteme/artifacthub-resource/internal/pkg/resource"
+	"github.com/hdisysteme/artifacthub-resource/internal/pkg/resource/fakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"time"
@@ -62,7 +62,7 @@ var _ = Describe("ArtifacthubResource Check", func() {
 				PackageName:    "my-package-name",
 				ApiKey:         "some-fake-api-key",
 			}))
-			Expect(check).To(HaveLen(1))
+			Expect(*check).To(HaveLen(1))
 			Expect(err).ToNot(HaveOccurred())
 
 		})

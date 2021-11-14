@@ -21,6 +21,7 @@ jobs:
 
       - name: Get dependencies
         run: |
+          make install-tools
           go get -v -t -d ./...
 
       - name: Build Assets
@@ -33,3 +34,8 @@ jobs:
 
       - name: Test-E2E
         run: go test -tags=e2e -race ./e2e
+
+      - name: Go Sec
+        run: gosec ./...
+
+

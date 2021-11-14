@@ -3,7 +3,7 @@ package resource
 import "fmt"
 
 // Check for CheckRequest will fetch all versions of a given helm chart
-func Check(request CheckRequest, repository ArtifactHub) (CheckResponse, error) {
+func Check(request CheckRequest, repository ArtifactHub) (*[]Version, error) {
 
 	err := request.validate()
 
@@ -22,7 +22,7 @@ func Check(request CheckRequest, repository ArtifactHub) (CheckResponse, error) 
 		return nil, err
 	}
 
-	return versions, nil
+	return &versions, nil
 }
 
 func (c CheckRequest) validate() error {
@@ -46,5 +46,3 @@ type CheckRequest struct {
 	Source  Source  `json:"source"`
 	Version Version `json:"version"`
 }
-
-type CheckResponse []Version
