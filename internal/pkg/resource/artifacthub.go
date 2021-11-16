@@ -135,7 +135,7 @@ func (t Epoch) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("\"%s\"", time.Time(t).Format(time.RFC3339))), nil
 }
 
-// UnmarshalJSON unmarshal the given time.RFC3339 formatted string to an Epoch representation
+// UnmarshalJSON unmarshals the given time.RFC3339 formatted string to an Epoch representation
 func (t *Epoch) UnmarshalJSON(s []byte) (err error) {
 	q, err := strconv.ParseInt(string(s), 10, 64)
 
