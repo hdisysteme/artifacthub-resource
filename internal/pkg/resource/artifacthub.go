@@ -130,6 +130,38 @@ func (a ArtifactHubClient) ListHelmVersions(p Package) ([]Version, error) {
 
 }
 
+// MarshalJSON marshals an Epoch into a formatted time.RFC3339 representation
+func (t Epoch) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("\"%s\"", time.Time(t).Format(time.RFC3339))), nil
+}
+
+// UnmarshalJSON unmarshals the given time.RFC3339 formatted string to an Epoch representation
+func (t *Epoch) UnmarshalJSON(s []byte) (err error) {
+	q, err := strconv.ParseInt(string(s), 10, 64)
+
+	if err != nil {
+		return err
+	}
+	*(*time.Time)(t) = time.Unix(q, 0)
+	return
+}
+
+// String transforms an Epoch to a time.Time string representation
+func (t Epoch) String() string { return time.Time(t).String() }
+
+// ArtifactHub is the interface implemented by
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o ./fakes/fake_artifacthub.go . ArtifactHub
+type ArtifactHub interface {
+	ListHelmVersions(p Package) ([]Version, error)
+	ListHelmVersion(p Package, version string) (*HelmVersion, error)
+}
+
+// ArtifactHubClient is used to query the artifacthub.io endpoint.
+type ArtifactHubClient struct {
+	client  *http.Client
+	baseUrl string
+}
+
 func printError(name string, target AvailableVersion, err error) {
 	fmt.Println(fmt.Sprintf(
 		"Error while getting semver version for package %s and version %s with error: %v",
@@ -157,48 +189,23 @@ func prepareHttpHeader(p Package, request *http.Request) {
 	}
 }
 
-func (t Epoch) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("\"%s\"", time.Time(t).Format(time.RFC3339))), nil
-}
-
-func (t *Epoch) UnmarshalJSON(s []byte) (err error) {
-	q, err := strconv.ParseInt(string(s), 10, 64)
-
-	if err != nil {
-		return err
-	}
-	*(*time.Time)(t) = time.Unix(q, 0)
-	return
-}
-
-func (t Epoch) String() string { return time.Time(t).String() }
-
-// ArtifactHub is the interface implemented by
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o ./fakes/fake_artifacthub.go . ArtifactHub
-type ArtifactHub interface {
-	ListHelmVersions(p Package) ([]Version, error)
-	ListHelmVersion(p Package, version string) (*HelmVersion, error)
-}
-
-// ArtifactHubClient is used to query the artifacthub.io endpoint.
-type ArtifactHubClient struct {
-	client  *http.Client
-	baseUrl string
-}
-
+// Package represents an artifacthub Helm Package
 type Package struct {
 	RepositoryName string
 	PackageName    string
 	ApiKey         string
 }
 
+// Epoch is an alias for time.Time
 type Epoch time.Time
 
+// AvailableVersion represents a version and version timestamp for a HelmVersion
 type AvailableVersion struct {
 	Version string `json:"version"`
 	TS      Epoch  `json:"ts"`
 }
 
+// Repository represents information about the repository of a HelmVersion
 type Repository struct {
 	Url                     string `json:"url"`
 	DisplayName             string `json:"display_name"`
@@ -206,6 +213,7 @@ type Repository struct {
 	OrganizationDisplayName string `json:"organization_display_name"`
 }
 
+// HelmVersion represents a helm chart package version
 type HelmVersion struct {
 	AppVersion        string             `json:"app_version"`
 	ContentUrl        string             `json:"content_url"`
@@ -216,6 +224,7 @@ type HelmVersion struct {
 	Repository        Repository         `json:"repository"`
 }
 
+// Version represents a specific version for a HelmVersion
 type Version struct {
 	CreatedAt time.Time `json:"created_at"`
 	Version   string    `json:"version"`

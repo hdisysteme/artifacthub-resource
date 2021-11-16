@@ -36,13 +36,15 @@ func (c CheckRequest) validate() error {
 	return nil
 }
 
+// CheckRequest contains the information for the desired Source and Version
+type CheckRequest struct {
+	Source  Source  `json:"source"`
+	Version Version `json:"version"`
+}
+
+// Source contains information for the helm repository and chart package
 type Source struct {
 	RepositoryName string `json:"repository_name"`
 	PackageName    string `json:"package_name"`
 	ApiKey         string `json:"api_key"`
-}
-
-type CheckRequest struct {
-	Source  Source  `json:"source"`
-	Version Version `json:"version"`
 }

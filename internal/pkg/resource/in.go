@@ -21,7 +21,7 @@ func Get(request GetRequest, path string, repository ArtifactHub) (*GetResponse,
 		return nil, err
 	}
 
-	var metadata = Metadata{}
+	var metadata = &Metadata{}
 	metadata.append("app_version", version.AppVersion)
 	metadata.append("charts_url", version.Repository.Url)
 	metadata.append("chart_download_url", version.ContentUrl)
@@ -34,7 +34,7 @@ func Get(request GetRequest, path string, repository ArtifactHub) (*GetResponse,
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return nil, fmt.Errorf("failed to create output directory: %s", err)
 	}
-	for _, metadatum := range metadata {
+	for _, metadatum := range *metadata {
 		if err := ioutil.WriteFile(filepath.Join(path, metadatum.Name), []byte(metadatum.Value), 0600); err != nil {
 			return nil, fmt.Errorf("failed to write %s: %s", metadatum.Name, err)
 		}
@@ -45,28 +45,32 @@ func Get(request GetRequest, path string, repository ArtifactHub) (*GetResponse,
 			CreatedAt: time.Time(version.TS).UTC(),
 			Version:   version.Version,
 		},
-		Metadata: metadata,
+		Metadata: *metadata,
 	}, nil
 }
 
+// GetRequest contains the information for a specific Source and Version
 type GetRequest struct {
 	Source  Source  `json:"source"`
 	Version Version `json:"version"`
 }
 
-type Metadata []*MetadataPair
-
-type MetadataPair struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
-}
+// GetResponse contains a Version and Metadata for a Version
 type GetResponse struct {
 	Version  Version  `json:"version"`
 	Metadata Metadata `json:"metadata,omitempty"`
 }
 
+// Metadata is a store for key, value information
+type Metadata []*metadataPair
+
+type metadataPair struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
 func (m *Metadata) append(name string, value string) {
-	*m = append(*m, &MetadataPair{
+	*m = append(*m, &metadataPair{
 		Name:  name,
 		Value: value,
 	})
